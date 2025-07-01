@@ -41,11 +41,9 @@
             <div class="cart-actions">
                 <a href="${pageContext.request.contextPath}/productList" class="btn btn-secondary">Back to Products</a>
                 <c:if test="${not empty cartItems}">
+                   
                     <form action="${pageContext.request.contextPath}/order" method="get" style="display:inline;">
-                        <button type="submit" class="btn btn-primary">Checkout with COD</button>
-                    </form>
-                    <form action="${pageContext.request.contextPath}/order" method="get" style="display:inline;">
-                        <button type="submit" class="btn btn-primary">Checkout with VNPAY</button>
+                        <button type="submit" class="btn btn-primary">Checkout</button>
                     </form>
                 </c:if>
             </div>
