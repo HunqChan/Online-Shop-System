@@ -16,7 +16,7 @@
             <div class="product-grid">
                 <c:forEach var="product" items="${productList}">
                     <div class="product-item card">
-                        <img src="${product.image != null ? product.image : product.imageUrl != null ? product.imageUrl : 'https://via.placeholder.com/250x200'}" alt="${product.name}" class="product-image card-img-top">
+                        <img src="${product.imageUrl}" alt="${product.name}" class="product-image card-img-top">
                         <div class="product-details card-body">
                             <h3 class="card-title">${product.name}</h3>
                             <p class="card-text">$${product.price}</p>
