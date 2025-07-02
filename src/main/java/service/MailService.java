@@ -13,7 +13,7 @@ public class MailService {
     public static void sendWelcomeEmail(String toEmail, String fullName) {
         String subject = "Welcome to OSS Shop!";
         String content = "Hello " + fullName + ",\n\n"
-                + "Welcome to OSS! Your account has been successfully created via Google Login.\n\n"
+                + "Welcome to OSS! Your account has been successfully created.\n\n"
                 + "We're happy to have you!\n\n"
                 + "Regards,\nOSS Team";
 

@@ -20,7 +20,7 @@
                 <div class="login_form_inner">
                     <h3>Complete Your Profile</h3>
                     <form class="row login_form" method="post"
-                          action="${pageContext.request.contextPath}/complete-profile" id="completeProfileForm">
+                          action="${pageContext.request.contextPath}/register-google" id="completeProfileForm">
                         <div class="col-md-12 form-group text-center mb-3">
                             <img src="<%= avatarUrl %>" alt="Avatar" style="max-width: 100px; border-radius: 50%;">
                         </div>
