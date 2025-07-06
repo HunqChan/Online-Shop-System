@@ -21,7 +21,8 @@
                         <h4>New to our website?</h4>
                         <p>There are advances being made in science and technology everyday, and a good example of this
                             is the</p>
-                        <a class="button button-account" href="${pageContext.request.contextPath}/register">Create an Account</a>
+                        <a class="button button-account" href="${pageContext.request.contextPath}/register">Create an
+                            Account</a>
                     </div>
                 </div>
             </div>
@@ -38,6 +39,12 @@
                             <input type="password" class="form-control" name="password" placeholder="Password"
                                    onfocus="this.placeholder = ''" onblur="this.placeholder = 'Password'" required>
                         </div>
+                        <div class="col-md-12 form-group text-end">
+                            <a href="${pageContext.request.contextPath}/forgot-password" class="text-decoration-none">
+                                Forgot your password?
+                            </a>
+                        </div>
+
                         <div class="col-md-12 form-group">
                             <button type="submit" class="button button-login w-100">Log In</button>
                         </div>
