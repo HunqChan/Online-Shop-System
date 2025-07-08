@@ -1,11 +1,11 @@
 
 package controller;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -33,6 +33,7 @@ public class CalculateShippingFeeServlet extends HttpServlet {
             JSONObject jsonRequest = new JSONObject(requestData);
             System.out.println("CalculateShippingFee Request: " + jsonRequest.toString());
 
+
             int fromDistrictId = jsonRequest.getInt("fromDistrictId");
             String fromWardCode = jsonRequest.getString("fromWardCode");
             int toDistrictId = jsonRequest.getInt("toDistrictId");
@@ -42,8 +43,10 @@ public class CalculateShippingFeeServlet extends HttpServlet {
             int width = jsonRequest.getInt("width");
             int height = jsonRequest.getInt("height");
 
+
             if (weight < 200) weight = 200;
             if (weight > 100000) weight = 100000;
+
 
             String url = GHN_API_URL + "/shipping-order/fee";
             JSONObject requestBody = new JSONObject();
@@ -59,6 +62,7 @@ public class CalculateShippingFeeServlet extends HttpServlet {
             requestBody.put("insurance_value", 0);
             requestBody.put("cod_failed_amount", 0);
 
+
             System.out.println("GHN Fee Request Body: " + requestBody.toString());
             HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
             conn.setRequestMethod("POST");
@@ -70,6 +74,7 @@ public class CalculateShippingFeeServlet extends HttpServlet {
             try (var os = conn.getOutputStream()) {
                 os.write(requestBody.toString().getBytes(StandardCharsets.UTF_8));
             }
+
 
             int responseCode = conn.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) {
@@ -103,6 +108,7 @@ public class CalculateShippingFeeServlet extends HttpServlet {
                     jsonResponse.put("message", "Failed to connect to GHN API: HTTP " + responseCode);
                 }
             }
+
             conn.disconnect();
 
             try (PrintWriter out = response.getWriter()) {
@@ -118,4 +124,5 @@ public class CalculateShippingFeeServlet extends HttpServlet {
             }
         }
     }
+
 }
