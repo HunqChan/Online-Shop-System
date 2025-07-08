@@ -13,6 +13,7 @@ GO
 USE swdproject;
 GO
 
+
 -- Bảng users
 CREATE TABLE users (
     id BIGINT IDENTITY(1,1) PRIMARY KEY,
@@ -30,6 +31,7 @@ CREATE TABLE users (
     username VARCHAR(255) NOT NULL
 );
 
+
 -- Bảng product_categories
 CREATE TABLE product_categories (
     id BIGINT IDENTITY(1,1) PRIMARY KEY,
@@ -40,6 +42,7 @@ CREATE TABLE product_categories (
     name VARCHAR(255) NOT NULL,
     updatedAt DATETIME2(6)
 );
+
 
 -- Bảng products
 CREATE TABLE products (
@@ -54,6 +57,7 @@ CREATE TABLE products (
     updatedAt DATETIME2(6),
     category_id BIGINT
 );
+
 
 -- Bảng product_additional_images
 CREATE TABLE product_additional_images (
