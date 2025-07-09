@@ -1,80 +1,17 @@
-USE [master]
+
+USE master;
 GO
-/****** Object:  Database [swdproject]    Script Date: 7/3/2025 7:44:53 AM ******/
-CREATE DATABASE [swdproject]
- CONTAINMENT = NONE
- ON  PRIMARY 
-( NAME = N'swdproject', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL15.PM\MSSQL\DATA\swdproject.mdf' , SIZE = 8192KB , MAXSIZE = UNLIMITED, FILEGROWTH = 65536KB )
- LOG ON 
-( NAME = N'swdproject_log', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL15.PM\MSSQL\DATA\swdproject_log.ldf' , SIZE = 8192KB , MAXSIZE = 2048GB , FILEGROWTH = 65536KB )
- WITH CATALOG_COLLATION = DATABASE_DEFAULT
+IF DB_ID('swdproject') IS NOT NULL
+BEGIN
+    ALTER DATABASE swdproject SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+    DROP DATABASE swdproject;
+END
 GO
-ALTER DATABASE [swdproject] SET COMPATIBILITY_LEVEL = 110
+
+CREATE DATABASE swdproject;
 GO
-IF (1 = FULLTEXTSERVICEPROPERTY('IsFullTextInstalled'))
-begin
-EXEC [swdproject].[dbo].[sp_fulltext_database] @action = 'enable'
-end
-GO
-ALTER DATABASE [swdproject] SET ANSI_NULL_DEFAULT OFF 
-GO
-ALTER DATABASE [swdproject] SET ANSI_NULLS OFF 
-GO
-ALTER DATABASE [swdproject] SET ANSI_PADDING OFF 
-GO
-ALTER DATABASE [swdproject] SET ANSI_WARNINGS OFF 
-GO
-ALTER DATABASE [swdproject] SET ARITHABORT OFF 
-GO
-ALTER DATABASE [swdproject] SET AUTO_CLOSE ON 
-GO
-ALTER DATABASE [swdproject] SET AUTO_SHRINK OFF 
-GO
-ALTER DATABASE [swdproject] SET AUTO_UPDATE_STATISTICS ON 
-GO
-ALTER DATABASE [swdproject] SET CURSOR_CLOSE_ON_COMMIT OFF 
-GO
-ALTER DATABASE [swdproject] SET CURSOR_DEFAULT  GLOBAL 
-GO
-ALTER DATABASE [swdproject] SET CONCAT_NULL_YIELDS_NULL OFF 
-GO
-ALTER DATABASE [swdproject] SET NUMERIC_ROUNDABORT OFF 
-GO
-ALTER DATABASE [swdproject] SET QUOTED_IDENTIFIER OFF 
-GO
-ALTER DATABASE [swdproject] SET RECURSIVE_TRIGGERS OFF 
-GO
-ALTER DATABASE [swdproject] SET  ENABLE_BROKER 
-GO
-ALTER DATABASE [swdproject] SET AUTO_UPDATE_STATISTICS_ASYNC OFF 
-GO
-ALTER DATABASE [swdproject] SET DATE_CORRELATION_OPTIMIZATION OFF 
-GO
-ALTER DATABASE [swdproject] SET TRUSTWORTHY OFF 
-GO
-ALTER DATABASE [swdproject] SET ALLOW_SNAPSHOT_ISOLATION OFF 
-GO
-ALTER DATABASE [swdproject] SET PARAMETERIZATION SIMPLE 
-GO
-ALTER DATABASE [swdproject] SET READ_COMMITTED_SNAPSHOT OFF 
-GO
-ALTER DATABASE [swdproject] SET HONOR_BROKER_PRIORITY OFF 
-GO
-ALTER DATABASE [swdproject] SET RECOVERY SIMPLE 
-GO
-ALTER DATABASE [swdproject] SET  MULTI_USER 
-GO
-ALTER DATABASE [swdproject] SET PAGE_VERIFY CHECKSUM  
-GO
-ALTER DATABASE [swdproject] SET DB_CHAINING OFF 
-GO
-ALTER DATABASE [swdproject] SET FILESTREAM( NON_TRANSACTED_ACCESS = OFF ) 
-GO
-ALTER DATABASE [swdproject] SET TARGET_RECOVERY_TIME = 60 SECONDS 
-GO
-ALTER DATABASE [swdproject] SET DELAYED_DURABILITY = DISABLED 
-GO
-ALTER DATABASE [swdproject] SET QUERY_STORE = OFF
+
+USE swdproject;
 GO
 USE [swdproject]
 GO
@@ -469,4 +406,26 @@ GO
 USE [master]
 GO
 ALTER DATABASE [swdproject] SET  READ_WRITE 
+GO
+
+-- Thêm ràng buộc FOREIGN KEY cho bảng users
+ALTER TABLE users
+ADD CONSTRAINT fk_users_role_id FOREIGN KEY (role_id) REFERENCES settings(setting_id);
+GO
+
+-- Thêm dữ liệu mẫu vào bảng settings cho loại ROLE
+INSERT INTO settings (setting_type, name, description, is_deleted)
+VALUES 
+('ROLE', 'Admin', 'Administrator role', 0),
+('ROLE', 'User', 'Regular user role', 0),
+('ROLE', 'Staff', 'Staff role', 0);
+GO
+
+-- Thêm dữ liệu mẫu vào bảng users (Admin, Users, Staff)
+INSERT INTO users (role_id, full_name, password, avatar_url, gender, email, phone_number, created_at, is_deleted)
+VALUES
+(1, 'Nguyen Van A', 'admin123', NULL, 1, 'admin@example.com', '0909123456', GETDATE(), 0),
+(2, 'Le Thi B', 'user123', NULL, 0, 'user1@example.com', '0909988776', GETDATE(), 0),
+(2, 'Tran Van C', 'user456', NULL, 1, 'user2@example.com', '0911222333', GETDATE(), 0),
+(3, 'Pham Thi D', 'staff123', NULL, 0, 'staff@example.com', '0988776655', GETDATE(), 0);
 GO
