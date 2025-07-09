@@ -1,3 +1,4 @@
+
 package controller;
 
 import dao.OrderDAO;
@@ -9,7 +10,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.Order;
 import model.OrderItem;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -29,7 +29,8 @@ public class OrderDetailServlet extends HttpServlet {
             request.setAttribute("order", order);
             request.setAttribute("orderItems", orderItems);
             request.getRequestDispatcher("/jsp/orderDetail.jsp").forward(request, response);
-        } else {
+        } 
+	else {
             response.sendRedirect("/error.jsp");
         }
     }
