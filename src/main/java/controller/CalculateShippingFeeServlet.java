@@ -1,4 +1,3 @@
-
 package controller;
 
 import jakarta.servlet.ServletException;
@@ -30,20 +29,37 @@ public class CalculateShippingFeeServlet extends HttpServlet {
 
         try {
             String requestData = request.getReader().lines().reduce("", (accumulator, actual) -> accumulator + actual);
-            JSONObject jsonRequest = new JSONObject(requestData);
-            System.out.println("CalculateShippingFee Request: " + jsonRequest.toString());
+            JSONObject jsonRequest;
+            try {
+                jsonRequest = new JSONObject(requestData);
+            } catch (Exception e) {
+                jsonResponse.put("success", false);
+                jsonResponse.put("message", "Invalid JSON request: " + e.getMessage());
+                try (PrintWriter out = response.getWriter()) {
+                    out.print(jsonResponse.toString());
+                }
+                return;
+            }
 
-            int fromDistrictId = jsonRequest.getInt("fromDistrictId");
-            String fromWardCode = jsonRequest.getString("fromWardCode");
-            int toDistrictId = jsonRequest.getInt("toDistrictId");
-            String toWardCode = jsonRequest.getString("toWardCode");
-            int weight = jsonRequest.getInt("weight");
-            int length = jsonRequest.getInt("length");
-            int width = jsonRequest.getInt("width");
-            int height = jsonRequest.getInt("height");
+            int fromDistrictId = jsonRequest.optInt("fromDistrictId", 0);
+            String fromWardCode = jsonRequest.optString("fromWardCode", "");
+            int toDistrictId = jsonRequest.optInt("toDistrictId", 0);
+            String toWardCode = jsonRequest.optString("toWardCode", "");
+            int weight = jsonRequest.optInt("weight", 200);
+            int length = jsonRequest.optInt("length", 1);
+            int width = jsonRequest.optInt("width", 1);
+            int height = jsonRequest.optInt("height", 1);
 
-            if (weight < 200) weight = 200;
-            if (weight > 100000) weight = 100000;
+            if (fromDistrictId == 0 || fromWardCode.isEmpty() || toDistrictId == 0 || toWardCode.isEmpty()) {
+                jsonResponse.put("success", false);
+                jsonResponse.put("message", "Missing required parameters");
+                try (PrintWriter out = response.getWriter()) {
+                    out.print(jsonResponse.toString());
+                }
+                return;
+            }
+
+            weight = Math.max(200, Math.min(weight, 100000));
 
             String url = GHN_API_URL + "/shipping-order/fee";
             JSONObject requestBody = new JSONObject();
@@ -51,7 +67,8 @@ public class CalculateShippingFeeServlet extends HttpServlet {
             requestBody.put("from_ward_code", fromWardCode);
             requestBody.put("to_district_id", toDistrictId);
             requestBody.put("to_ward_code", toWardCode);
-            requestBody.put("service_id", 53321);
+            int serviceId = jsonRequest.optInt("serviceId", 53321); // TODO: Lấy động từ API GHN
+            requestBody.put("service_id", serviceId);
             requestBody.put("weight", weight);
             requestBody.put("length", length);
             requestBody.put("width", width);
@@ -79,16 +96,21 @@ public class CalculateShippingFeeServlet extends HttpServlet {
                     while ((inputLine = in.readLine()) != null) {
                         responseBody.append(inputLine);
                     }
-                    JSONObject jsonResponseGHN = new JSONObject(responseBody.toString());
-                    System.out.println("GHN Fee Response: " + jsonResponseGHN.toString());
-                    if (jsonResponseGHN.getInt("code") == 200) {
-                        JSONObject data = jsonResponseGHN.getJSONObject("data");
-                        double shippingFee = data.getInt("total") / 25000.0;
-                        jsonResponse.put("success", true);
-                        jsonResponse.put("shippingFee", shippingFee);
-                    } else {
+                    try {
+                        JSONObject jsonResponseGHN = new JSONObject(responseBody.toString());
+                        System.out.println("GHN Fee Response: " + jsonResponseGHN.toString());
+                        if (jsonResponseGHN.getInt("code") == 200) {
+                            JSONObject data = jsonResponseGHN.getJSONObject("data");
+                            double shippingFee = data.getInt("total");
+                            jsonResponse.put("success", true);
+                            jsonResponse.put("shippingFee", shippingFee);
+                        } else {
+                            jsonResponse.put("success", false);
+                            jsonResponse.put("message", "API Error: " + jsonResponseGHN.getString("message"));
+                        }
+                    } catch (Exception e) {
                         jsonResponse.put("success", false);
-                        jsonResponse.put("message", "API Error: " + jsonResponseGHN.getString("message"));
+                        jsonResponse.put("message", "Invalid JSON response: " + e.getMessage());
                     }
                 }
             } else {
@@ -104,18 +126,13 @@ public class CalculateShippingFeeServlet extends HttpServlet {
                 }
             }
             conn.disconnect();
-
-            try (PrintWriter out = response.getWriter()) {
-                out.print(jsonResponse.toString());
-                out.flush();
-            }
         } catch (Exception e) {
             jsonResponse.put("success", false);
             jsonResponse.put("message", "Server error: " + e.getMessage());
-            try (PrintWriter out = response.getWriter()) {
-                out.print(jsonResponse.toString());
-                out.flush();
-            }
+        }
+
+        try (PrintWriter out = response.getWriter()) {
+            out.print(jsonResponse.toString());
         }
     }
 }

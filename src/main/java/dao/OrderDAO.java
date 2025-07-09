@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import model.Order;
@@ -43,6 +44,83 @@ public class OrderDAO {
         return orders;
     }
 
+    // Thêm vào OrderDAO class
+
+public Order getOrderByNumber(String orderNumber) {
+    String sql = "SELECT * FROM orders WHERE orderNumber = ?";
+    try (var conn = dbConnect.getConnection();
+         var ps = conn.prepareStatement(sql)) {
+        ps.setString(1, orderNumber);
+        try (var rs = ps.executeQuery()) {
+            if (rs.next()) {
+                Order order = new Order();
+                order.setId(rs.getLong("id"));
+                order.setOrderNumber(rs.getString("orderNumber"));
+                order.setUserId(rs.getLong("user_id"));
+                order.setSubtotal(rs.getDouble("subtotal"));
+                order.setShippingFee(rs.getDouble("shippingFee"));
+                order.setTotal(rs.getDouble("total"));
+                order.setStatus(rs.getString("status"));
+                order.setPaymentMethod(rs.getString("paymentMethod"));
+                order.setPaymentStatus(rs.getString("paymentStatus"));
+                order.setPaymentTransactionId(rs.getString("paymentTransactionId"));
+                order.setShippingAddress(rs.getString("shippingAddress"));
+                order.setCreatedAt(rs.getTimestamp("createdAt"));
+                order.setUpdatedAt(rs.getTimestamp("updatedAt"));
+                order.setToDistrictId(rs.getInt("to_district_id"));
+                order.setToWardCode(rs.getString("to_ward_code"));
+                order.setServiceId(rs.getInt("service_id"));
+                return order;
+            }
+        }
+    } catch (SQLException e) {
+        System.out.println("Error getting order by number: " + e.getMessage());
+        e.printStackTrace();
+    }
+    return null;
+}
+
+public boolean updateOrder(Order order) {
+    String sql = "UPDATE orders SET paymentStatus = ?, paymentTransactionId = ?, status = ?, updatedAt = ? WHERE orderNumber = ?";
+    try (var conn = dbConnect.getConnection();
+         var ps = conn.prepareStatement(sql)) {
+        ps.setString(1, order.getPaymentStatus());
+        ps.setString(2, order.getPaymentTransactionId());
+        ps.setString(3, order.getStatus());
+        ps.setTimestamp(4, order.getUpdatedAt());
+        ps.setString(5, order.getOrderNumber());
+        
+        int rowsUpdated = ps.executeUpdate();
+        System.out.println("Rows updated: " + rowsUpdated + " for order: " + order.getOrderNumber());
+        return rowsUpdated > 0;
+    } catch (SQLException e) {
+        System.out.println("Error updating order: " + e.getMessage());
+        e.printStackTrace();
+        return false;
+    }
+}
+
+// Method để debug - liệt kê tất cả orders
+public void debugPrintAllOrders() {
+    String sql = "SELECT orderNumber, status, paymentStatus, createdAt FROM orders ORDER BY createdAt DESC";
+    try (var conn = dbConnect.getConnection();
+         var ps = conn.prepareStatement(sql);
+         var rs = ps.executeQuery()) {
+        
+        System.out.println("=== Recent Orders ===");
+        int count = 0;
+        while (rs.next() && count < 10) {
+            System.out.println("Order: " + rs.getString("orderNumber") + 
+                             ", Status: " + rs.getString("status") + 
+                             ", Payment: " + rs.getString("paymentStatus") + 
+                             ", Created: " + rs.getTimestamp("createdAt"));
+            count++;
+        }
+    } catch (SQLException e) {
+        System.out.println("Error debugging orders: " + e.getMessage());
+        e.printStackTrace();
+    }
+}
     public boolean addOrder(Order order) {
         String sql = "INSERT INTO orders (createdAt, orderNumber, paymentMethod, paymentStatus, paymentTransactionId, " +
                      "shippingAddress, shippingFee, status, subtotal, total, updatedAt, user_id, " +

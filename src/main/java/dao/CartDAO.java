@@ -115,6 +115,27 @@ public class CartDAO {
         return total;
     }
 
+    public Cart getCartById(long cartId) {
+    Cart cart = null;
+    String sql = "SELECT id, createdAt, sessionId, updatedAt, user_id FROM carts WHERE id = ?";
+    try (Connection conn = dbConnect.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setLong(1, cartId);
+        try (ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                cart = new Cart();
+                cart.setId(rs.getLong("id"));
+                cart.setCreatedAt(rs.getTimestamp("createdAt"));
+                cart.setSessionId(rs.getString("sessionId"));
+                cart.setUpdatedAt(rs.getTimestamp("updatedAt"));
+                cart.setUserId(rs.getLong("user_id") != 0 ? rs.getLong("user_id") : null);
+            }
+        }
+    } catch (SQLException e) {
+        System.out.println("Lỗi khi lấy thông tin cart theo id: " + e.getMessage());
+    }
+    return cart;
+}
     // Thêm phương thức addCart
     public boolean addCart(Cart cart) {
         String sql = "INSERT INTO carts (createdAt, sessionId, updatedAt, user_id) VALUES (?, ?, ?, ?)";
