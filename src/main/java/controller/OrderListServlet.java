@@ -26,7 +26,6 @@ public class OrderListServlet extends HttpServlet {
         // Chuyển hướng đến trang JSP
         request.getRequestDispatcher("/jsp/orderList.jsp").forward(request, response);
     }
-
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         // Phương thức POST có thể được mở rộng nếu cần thêm chức năng (ví dụ: lọc, tìm kiếm)
