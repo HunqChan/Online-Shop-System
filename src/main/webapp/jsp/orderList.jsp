@@ -78,6 +78,9 @@
                                         <strong>Status:</strong> <span class="badge bg-${order.status == 'PENDING' ? 'warning' : order.status == 'COMPLETED' ? 'success' : 'secondary'}">${order.status}</span>
                                     </div>
                                     <div class="col-md-3 text-end">
+                                        <a href="${pageContext.request.contextPath}/orderEdit?id=${order.id}" class="btn btn-custom">Edit</a>
+                                    </div>
+                                    <div class="col-md-3 text-end">
                                         <a href="${pageContext.request.contextPath}/orderDetail?id=${order.id}" class="btn btn-custom">View Detail</a>
                                     </div>
                                 </div>

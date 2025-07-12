@@ -29,4 +29,12 @@ public class User {
     private boolean isDeleted;
     private String resetPasswordToken;
     private Timestamp resetPasswordExpiry;
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
 }

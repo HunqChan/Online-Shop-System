@@ -4,6 +4,15 @@ public class OrderItem {
     private int quantity;
     private String productName;
     private double price;
+    private int id;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     // Getters and Setters
     public int getQuantity() { return quantity; }
