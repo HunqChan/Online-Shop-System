@@ -32,4 +32,29 @@ public class OrderItemDAO {
         }
         return orderItems;
     }
+    public List<OrderItem> getItemsByOrderId(int orderId) throws SQLException {
+        List<OrderItem> list = new ArrayList<>();
+        String sql = "SELECT * FROM order_items WHERE order_id=?";
+        PreparedStatement ps = dbConnect.getConnection().prepareStatement(sql);
+        ps.setInt(1, orderId);
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            OrderItem item = new OrderItem();
+            item.setId(rs.getInt("id"));
+            item.setProductName(rs.getString("productName"));
+            item.setQuantity(rs.getInt("quantity"));
+            item.setPrice((rs.getDouble("price")));
+            list.add(item);
+        }
+        return list;
+    }
+
+    public void updateOrderItem(OrderItem item) throws SQLException {
+        String sql = "UPDATE order_items SET quantity=?, price=? WHERE id=?";
+        PreparedStatement ps = dbConnect.getConnection().prepareStatement(sql);
+        ps.setInt(1, item.getQuantity());
+        ps.setDouble(2, item.getPrice());
+        ps.setInt(3, item.getId());
+        ps.executeUpdate();
+    }
 }

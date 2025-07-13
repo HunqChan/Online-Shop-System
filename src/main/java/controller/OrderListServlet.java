@@ -20,6 +20,7 @@ public class OrderListServlet extends HttpServlet {
         OrderDAO orderDAO = new OrderDAO();
         List<Order> orderList = orderDAO.getAllOrders();
 
+        //List ordder
         // Đưa danh sách đơn hàng vào request attribute
         request.setAttribute("orderList", orderList);
 

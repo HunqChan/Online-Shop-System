@@ -81,14 +81,15 @@ public Order getOrderByNumber(String orderNumber) {
 }
 
 public boolean updateOrder(Order order) {
-    String sql = "UPDATE orders SET paymentStatus = ?, paymentTransactionId = ?, status = ?, updatedAt = ? WHERE orderNumber = ?";
+    String sql = "UPDATE orders SET paymentStatus = ?, paymentTransactionId = ?, status = ?, updatedAt = ?,note = ? WHERE id = ?";
     try (var conn = dbConnect.getConnection();
          var ps = conn.prepareStatement(sql)) {
-        ps.setString(1, order.getPaymentStatus());
+        ps.setString(1, "PENDING");
         ps.setString(2, order.getPaymentTransactionId());
         ps.setString(3, order.getStatus());
         ps.setTimestamp(4, order.getUpdatedAt());
-        ps.setString(5, order.getOrderNumber());
+        ps.setString(5, order.getNote());
+        ps.setLong(6, order.getId());
         
         int rowsUpdated = ps.executeUpdate();
         System.out.println("Rows updated: " + rowsUpdated + " for order: " + order.getOrderNumber());
@@ -184,5 +185,39 @@ public void debugPrintAllOrders() {
             System.out.println("Lỗi khi lấy thông tin order: " + e.getMessage());
         }
         return order;
+    }
+
+    public Order getOrderById(int id) throws SQLException {
+        String sql = "SELECT * FROM orders WHERE id = ?";
+        PreparedStatement ps = dbConnect.getConnection().prepareStatement(sql);
+        ps.setInt(1, id);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            Order order = new Order();
+            order.setId(rs.getInt("id"));
+            order.setCreatedAt(rs.getTimestamp("createdAt"));
+            order.setShippingAddress(rs.getString("shippingAddress"));
+            order.setStatus(rs.getString("status"));
+            order.setNote(rs.getString("note"));
+            order.setShippingMethod(rs.getString("shippingMethod"));
+            order.setTrackingNumber(rs.getString("trackingNumber"));
+            order.setShippingStatus(rs.getString("shippingStatus"));
+            order.setUserId(rs.getLong("user_id"));
+            return order;
+        }
+        return null;
+    }
+
+    public void updateOrderV2(Order order) throws SQLException {
+        String sql = "UPDATE orders SET shippingAddress=?, status=?, note=?, shippingMethod=?, trackingNumber=?, shippingStatus=? WHERE id=?";
+        PreparedStatement ps = dbConnect.getConnection().prepareStatement(sql);
+        ps.setString(1, order.getShippingAddress());
+        ps.setString(2, order.getStatus());
+        ps.setString(3, order.getNote());
+        ps.setString(4, order.getShippingMethod());
+        ps.setString(5, order.getTrackingNumber());
+        ps.setString(6, order.getShippingStatus());
+        ps.setLong(7, order.getId());
+        ps.executeUpdate();
     }
 }
