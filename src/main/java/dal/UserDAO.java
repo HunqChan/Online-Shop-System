@@ -1,6 +1,7 @@
 package dal;
 
 import model.User;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -88,8 +89,8 @@ public class UserDAO extends DBContext<User> {
     @Override
     public int insert(User user) {
         String sql = "INSERT INTO users (role_id, full_name, password, avatar_url, gender, email, phone_number, " +
-                "province_id, province_name, ward_code, ward_name, detail_address, created_at, is_deleted) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, GETDATE(), 0)";
+                "province_id, province_name, district_id, district_name, ward_code, ward_name, detail_address, created_at, is_deleted) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, GETDATE(), 0)";
 
         try (Connection conn = getConn();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -103,9 +104,11 @@ public class UserDAO extends DBContext<User> {
             ps.setString(7, user.getPhoneNumber());
             ps.setObject(8, user.getProvinceId(), Types.INTEGER);
             ps.setString(9, user.getProvinceName());
-            ps.setString(10, user.getWardCode());
-            ps.setString(11, user.getWardName());
-            ps.setString(12, user.getDetailAddress());
+            ps.setObject(10, user.getDistrictId(), Types.INTEGER);
+            ps.setString(11, user.getDistrictName());
+            ps.setString(12, user.getWardCode());
+            ps.setString(13, user.getWardName());
+            ps.setString(14, user.getDetailAddress());
 
             return ps.executeUpdate();
 
@@ -114,12 +117,13 @@ public class UserDAO extends DBContext<User> {
         }
         return 0;
     }
+
 
     @Override
     public int update(User user) {
         String sql = "UPDATE users SET role_id = ?, full_name = ?, password = ?, avatar_url = ?, gender = ?, " +
-                "email = ?, phone_number = ?, province_id = ?, province_name = ?, ward_code = ?, ward_name = ?, " +
-                "detail_address = ?, updated_at = GETDATE() WHERE user_id = ?";
+                "email = ?, phone_number = ?, province_id = ?, province_name = ?, district_id = ?, district_name = ?, " +
+                "ward_code = ?, ward_name = ?, detail_address = ?, updated_at = GETDATE() WHERE user_id = ?";
 
         try (Connection conn = getConn();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -133,10 +137,12 @@ public class UserDAO extends DBContext<User> {
             ps.setString(7, user.getPhoneNumber());
             ps.setObject(8, user.getProvinceId(), Types.INTEGER);
             ps.setString(9, user.getProvinceName());
-            ps.setString(10, user.getWardCode());
-            ps.setString(11, user.getWardName());
-            ps.setString(12, user.getDetailAddress());
-            ps.setInt(13, user.getUserId());
+            ps.setObject(10, user.getDistrictId(), Types.INTEGER);
+            ps.setString(11, user.getDistrictName());
+            ps.setString(12, user.getWardCode());
+            ps.setString(13, user.getWardName());
+            ps.setString(14, user.getDetailAddress());
+            ps.setInt(15, user.getUserId());
 
             return ps.executeUpdate();
 
@@ -145,6 +151,7 @@ public class UserDAO extends DBContext<User> {
         }
         return 0;
     }
+
 
     @Override
     public int delete(int... id) {
@@ -175,6 +182,8 @@ public class UserDAO extends DBContext<User> {
                 .phoneNumber(rs.getString("phone_number"))
                 .provinceId((Integer) rs.getObject("province_id"))
                 .provinceName(rs.getString("province_name"))
+                .districtId((Integer) rs.getObject("district_id"))
+                .districtName(rs.getString("district_name"))
                 .wardCode(rs.getString("ward_code"))
                 .wardName(rs.getString("ward_name"))
                 .detailAddress(rs.getString("detail_address"))
@@ -185,4 +194,5 @@ public class UserDAO extends DBContext<User> {
                 .resetPasswordExpiry(rs.getTimestamp("reset_password_expiry"))
                 .build();
     }
+
 }

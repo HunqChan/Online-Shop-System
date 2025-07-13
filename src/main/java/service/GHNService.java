@@ -9,11 +9,11 @@ import java.net.URL;
 import java.util.*;
 
 public class GHNService {
-    private static final String GHN_TOKEN = "ebf83fc3-600d-11f0-b272-6641004027c3"; // 🔁 thay token thật
+    private static final String GHN_TOKEN = "ebf83fc3-600d-11f0-b272-6641004027c3"; // TODO: Replace with real token
     private static final String BASE_URL = "https://online-gateway.ghn.vn/shiip/public-api";
     private final ObjectMapper mapper = new ObjectMapper();
 
-    // ✅ Get list of provinces (id + name)
+    // ✅ Get list of provinces (ProvinceID + ProvinceName)
     public List<Map<String, String>> getProvinces() throws IOException {
         URL url = new URL(BASE_URL + "/master-data/province");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -30,15 +30,15 @@ public class GHNService {
         if (data != null && data.isArray()) {
             for (JsonNode node : data) {
                 Map<String, String> province = new HashMap<>();
-                province.put("id", String.valueOf(node.get("ProvinceID").asInt()));
-                province.put("name", node.get("ProvinceName").asText());
+                province.put("ProvinceID", String.valueOf(node.get("ProvinceID").asInt()));
+                province.put("ProvinceName", node.get("ProvinceName").asText());
                 provinces.add(province);
             }
         }
         return provinces;
     }
 
-    // ✅ Get list of districts (id + name) by province_id
+    // ✅ Get list of districts (DistrictID + DistrictName) by province_id
     public List<Map<String, String>> getDistricts(int provinceId) throws IOException {
         URL url = new URL(BASE_URL + "/master-data/district");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -62,15 +62,15 @@ public class GHNService {
         if (data != null && data.isArray()) {
             for (JsonNode node : data) {
                 Map<String, String> district = new HashMap<>();
-                district.put("id", String.valueOf(node.get("DistrictID").asInt()));
-                district.put("name", node.get("DistrictName").asText());
+                district.put("DistrictID", String.valueOf(node.get("DistrictID").asInt()));
+                district.put("DistrictName", node.get("DistrictName").asText());
                 districts.add(district);
             }
         }
         return districts;
     }
 
-    // ✅ Get list of wards (code + name) by district_id
+    // ✅ Get list of wards (WardCode + WardName) by district_id
     public List<Map<String, String>> getWards(int districtId) throws IOException {
         URL url = new URL(BASE_URL + "/master-data/ward");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -94,8 +94,8 @@ public class GHNService {
         if (data != null && data.isArray()) {
             for (JsonNode node : data) {
                 Map<String, String> ward = new HashMap<>();
-                ward.put("code", node.get("WardCode").asText());
-                ward.put("name", node.get("WardName").asText());
+                ward.put("WardCode", node.get("WardCode").asText());
+                ward.put("WardName", node.get("WardName").asText());
                 wards.add(ward);
             }
         }

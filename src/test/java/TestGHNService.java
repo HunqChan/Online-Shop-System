@@ -15,16 +15,16 @@ public class TestGHNService {
                 System.out.println(p.get("id") + " - " + p.get("name"));
             }
 
-            // ✅ Test lấy danh sách quận/huyện của TP. Hồ Chí Minh (ProvinceID = 201)
-            System.out.println("\n===== Districts of Hồ Chí Minh (201) =====");
+            // ✅ Test lấy danh sách quận/huyện
+            System.out.println("\n===== Districts of Ha Noi (201) =====");
             List<Map<String, String>> districts = ghnService.getDistricts(201);
             for (Map<String, String> d : districts) {
                 System.out.println(d.get("id") + " - " + d.get("name"));
             }
 
-            // ✅ Test lấy danh sách phường/xã của Quận 1 (DistrictID = 1450)
-            System.out.println("\n===== Wards of Quận 1 (1450) =====");
-            List<Map<String, String>> wards = ghnService.getWards(1450);
+            // ✅ Test lấy danh sách phường/xã
+            System.out.println("\n===== Wards of Soc Son =====");
+            List<Map<String, String>> wards = ghnService.getWards(1583);
             for (Map<String, String> w : wards) {
                 System.out.println(w.get("code") + " - " + w.get("name"));
             }

@@ -60,7 +60,6 @@ CREATE TABLE users
     CONSTRAINT fk_users_role_id FOREIGN KEY (role_id) REFERENCES settings (setting_id)
 );
 
-
 CREATE TABLE products
 (
     id          BIGINT IDENTITY (1,1) PRIMARY KEY,
