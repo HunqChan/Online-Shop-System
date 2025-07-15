@@ -7,7 +7,7 @@
 </head>
 <body>
 <div class="container mt-5 mb-5">
-    <h3 class="mb-4">Edit Order</h3>
+    <h3 class="mb-4">Update Order Detail </h3>
     <form method="post" action="orderEdit">
         <input type="hidden" name="orderId" value="${order.id}"/>
 
