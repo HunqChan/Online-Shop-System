@@ -566,7 +566,6 @@
     </section>
     <!-- ================ Subscribe section end ================= -->
 
-
 </main>
 <jsp:include page="footer.jsp"/>
 <jsp:include page="common-scripts.jsp"/>

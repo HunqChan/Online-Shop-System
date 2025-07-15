@@ -1,116 +1,161 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <%@ page import="model.User" %>
-<%@ include file="common-css.jsp" %>
+<%@ page import="java.util.List" %>
 <%
     User user = (User) session.getAttribute("user");
     if (user == null) {
-        response.sendRedirect("login");
+        response.sendRedirect("login.jsp");
         return;
     }
 %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Update Profile</title>
+    <jsp:include page="common-css.jsp"/>
+    <script>
+        window.contextPath = "<%= request.getContextPath() %>";
+    </script>
 </head>
-<body data-context-path="<%= request.getContextPath() %>">
+<body data-context-path="${pageContext.request.contextPath}">
 <jsp:include page="header.jsp"/>
+
 <main class="site-main">
-    <section class="section-margin--small mt-5 mb-5">
+    <section class="section-margin">
         <div class="container">
+            <h2 class="mb-4">Update Profile</h2>
+
+            <% if (request.getAttribute("message") != null) { %>
+            <div class="alert alert-success"><%= request.getAttribute("message") %>
+            </div>
+            <% } %>
+            <% if (request.getAttribute("error") != null) { %>
+            <div class="alert alert-danger"><%= request.getAttribute("error") %>
+            </div>
+            <% } %>
+            <% if (request.getAttribute("validationErrors") != null) { %>
+            <div class="alert alert-danger">
+                <ul>
+                    <% for (String err : (List<String>) request.getAttribute("validationErrors")) { %>
+                    <li><%= err %></li>
+                    <% } %>
+                </ul>
+            </div>
+            <% } %>
+
             <div class="row">
-                <!-- Avatar upload -->
-                <div class="col-md-12 text-center mb-5">
-                    <form action="upload-avatar" method="post" enctype="multipart/form-data" id="avatarForm">
-                        <img src="<%= user.getAvatarUrl() %>" alt="Avatar" class="rounded-circle mb-3" width="120"
-                             height="120">
-                        <div class="d-flex justify-content-center">
-                            <input type="file" name="avatar" class="form-control-file"
-                                   onchange="document.getElementById('avatarForm').submit()">
+                <!-- Avatar Upload -->
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <img id="avatarPreview"
+                                 src="<%= user.getAvatarUrl() != null ? user.getAvatarUrl() : "img/default-avatar.png" %>"
+                                 alt="Avatar"
+                                 class="rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+
+                            <form action="${pageContext.request.contextPath}/upload-avatar" method="post"
+                                  enctype="multipart/form-data">
+                                <input type="file"
+                                       name="avatar"
+                                       accept="image/png, image/jpeg, image/jpg, image/gif"
+                                       class="form-control-file"
+                                       onchange="if(this.files.length > 0) this.form.submit();">
+                            </form>
                         </div>
-                    </form>
+                    </div>
                 </div>
 
-                <!-- Profile update form -->
-                <div class="col-lg-12">
-                    <form action="update-profile" method="post" class="row">
-                        <!-- Left -->
-                        <div class="col-md-6">
-                            <div class="form-group">
+                <!-- User Info Form -->
+                <div class="col-md-8">
+                    <form action="update-profile" method="post">
+                        <div class="form-row">
+                            <!-- Full Name -->
+                            <div class="form-group col-md-6">
                                 <label for="fullName">Full Name</label>
-                                <input type="text" class="form-control" name="fullName"
-                                       value="<%= user.getFullName() %>">
+                                <input type="text" class="form-control" id="fullName" name="full_name"
+                                       value="<%= user.getFullName() %>" required>
                             </div>
-                            <div class="form-group">
-                                <label for="phoneNumber">Phone Number</label>
-                                <input type="text" class="form-control" name="phoneNumber"
-                                       value="<%= user.getPhoneNumber() %>">
+
+                            <!-- Email -->
+                            <div class="form-group col-md-6">
+                                <label for="email">Email</label>
+                                <input type="email" class="form-control" id="email" name="email"
+                                       value="<%= user.getEmail() %>" required>
                             </div>
-                            <div class="form-group">
+                        </div>
+
+                        <div class="form-row">
+                            <!-- Phone Number -->
+                            <div class="form-group col-md-6">
+                                <label for="phoneNumber">Phone</label>
+                                <input type="text" class="form-control" id="phoneNumber" name="phone_number"
+                                       value="<%= user.getPhoneNumber() != null ? user.getPhoneNumber() : "" %>">
+                            </div>
+
+                            <!-- Gender -->
+                            <div class="form-group col-md-6">
+                                <label>Gender</label><br>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="gender" id="male" value="true"
+                                        <%= Boolean.TRUE.equals(user.getGender()) ? "checked" : "" %>>
+                                    <label class="form-check-label" for="male">Male</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="gender" id="female" value="false"
+                                        <%= Boolean.FALSE.equals(user.getGender()) ? "checked" : "" %>>
+                                    <label class="form-check-label" for="female">Female</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Address Selection -->
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
                                 <label for="province">Province</label>
-                                <select id="province" name="provinceId" class="form-control"
-                                        data-selected="<%= user.getProvinceId() != null ? user.getProvinceId() : "" %>"></select>
+                                <select name="province_id" id="province" class="form-control">
+                                    <option value="">Select province</option>
+                                </select>
+                                <input type="hidden" name="province_name" id="provinceName"
+                                       value="<%= user.getProvinceName() != null ? user.getProvinceName() : "" %>">
                             </div>
-                            <div class="form-group">
+
+                            <div class="form-group col-md-4">
                                 <label for="district">District</label>
-                                <select id="district" name="districtId" class="form-control"
-                                        data-selected="<%= user.getDistrictId() != null ? user.getDistrictId() : "" %>"></select>
+                                <select name="district_id" id="district" class="form-control">
+                                    <option value="">Select district</option>
+                                </select>
+                                <input type="hidden" name="district_name" id="districtName"
+                                       value="<%= user.getDistrictName() != null ? user.getDistrictName() : "" %>">
                             </div>
-                            <div class="form-group">
+
+                            <div class="form-group col-md-4">
                                 <label for="ward">Ward</label>
-                                <select id="ward" name="wardCode" class="form-control"
-                                        data-selected="<%= user.getWardCode() != null ? user.getWardCode() : "" %>"></select>
-                            </div>
-                            <input type="hidden" name="provinceName" id="provinceName"
-                                   value="<%= user.getProvinceName() %>">
-                            <input type="hidden" name="districtName" id="districtName"
-                                   value="<%= user.getDistrictName() %>">
-                            <input type="hidden" name="wardName" id="wardName" value="<%= user.getWardName() %>">
-
-                        </div>
-
-                        <!-- Right -->
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Email</label>
-                                <input type="email" class="form-control" value="<%= user.getEmail() %>" readonly>
-                            </div>
-                            <div class="form-group">
-                                <label for="gender">Gender</label><br>
-                                <input type="radio" name="gender" id="male" value="true"
-                                    <%= user.getGender() != null && user.getGender() ? "checked" : "" %>>
-                                <label for="male">Male</label>
-
-                                <input type="radio" name="gender" id="female" value="false"
-                                    <%= user.getGender() != null && !user.getGender() ? "checked" : "" %>>
-                                <label for="female">Female</label>
-                            </div>
-                            <div class="form-group">
-                                <label for="detailAddress">Detail Address</label>
-                                <input type="text" class="form-control" name="detailAddress"
-                                       value="<%= user.getDetailAddress() %>">
-                            </div>
-                            <div class="form-group">
-                                <a href="change-password" class="btn btn-link">Change Password</a>
+                                <select name="ward_code" id="ward" class="form-control">
+                                    <option value="">Select ward</option>
+                                </select>
+                                <input type="hidden" name="ward_name" id="wardName"
+                                       value="<%= user.getWardName() != null ? user.getWardName() : "" %>">
                             </div>
                         </div>
 
-                        <!-- Submit -->
-                        <div class="col-12 text-center mt-4">
-                            <button type="submit" class="button button-login w-25">Update Profile</button>
+                        <!-- Detail Address -->
+                        <div class="form-group">
+                            <label for="detailAddress">Detail Address</label>
+                            <input type="text" class="form-control" id="detailAddress" name="detail_address"
+                                   value="<%= user.getDetailAddress() != null ? user.getDetailAddress() : "" %>">
                         </div>
+
+                        <button type="submit" class="btn btn-primary">Update Profile</button>
                     </form>
                 </div>
             </div>
         </div>
     </section>
 </main>
+
 <jsp:include page="footer.jsp"/>
 <jsp:include page="common-scripts.jsp"/>
-<script>
-    window.contextPath = '<%= request.getContextPath() %>';
-</script>
 <script src="js/update-profile.js"></script>
-
 </body>
 </html>

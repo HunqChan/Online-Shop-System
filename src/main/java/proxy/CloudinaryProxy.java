@@ -1,11 +1,11 @@
-package service;
+package proxy;
 
 import com.cloudinary.Cloudinary;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class CloudinaryService {
+public class CloudinaryProxy {
 
     private static Cloudinary cloudinary;
 

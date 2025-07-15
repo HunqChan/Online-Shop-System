@@ -2,40 +2,30 @@ package validation;
 
 import model.User;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserValidator {
+    public static List<String> validateForUpdate(User user) {
+        List<String> errors = new ArrayList<>();
 
-    public Map<String, String> validateProfile(User user) {
-        Map<String, String> errors = new HashMap<>();
-
-        if (user.getFullName() == null || user.getFullName().trim().isEmpty()) {
-            errors.put("fullName", "Full name is required.");
-        }
-
-        if (user.getPhoneNumber() == null || user.getPhoneNumber().length() < 8) {
-            errors.put("phoneNumber", "Invalid phone number.");
-        }
-
-        boolean hasAnyAddressField =
-                user.getProvinceId() != null ||
-                        user.getDistrictId() != null ||
-                        (user.getWardCode() != null && !user.getWardCode().isBlank());
-
-        if (hasAnyAddressField) {
-            if (user.getProvinceId() == null) {
-                errors.put("provinceId", "Province must be selected if you enter address.");
-            }
-            if (user.getDistrictId() == null) {
-                errors.put("districtId", "District must be selected if you enter address.");
-            }
-            if (user.getWardCode() == null || user.getWardCode().trim().isEmpty()) {
-                errors.put("wardCode", "Ward must be selected if you enter address.");
-            }
-        }
+        if (user.getFullName() == null || user.getFullName().isBlank())
+            errors.add("Full name is required.");
+        if (user.getEmail() == null || !user.getEmail().matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$"))
+            errors.add("Invalid email format.");
+        if (user.getPhoneNumber() != null && !user.getPhoneNumber().matches("^\\d{9,11}$"))
+            errors.add("Phone number must be 9-11 digits.");
+        if (user.getGender() == null)
+            errors.add("Gender is required.");
+        if (user.getProvinceId() <= 0)
+            errors.add("Province is required.");
+        if (user.getDistrictId() <= 0)
+            errors.add("District is required.");
+        if (user.getWardCode() == null || user.getWardCode().isBlank())
+            errors.add("Ward is required.");
 
         return errors;
     }
 }
+
 

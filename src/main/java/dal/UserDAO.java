@@ -8,6 +8,25 @@ import java.util.List;
 
 public class UserDAO extends DBContext<User> {
 
+    public User findById(int userId) {
+        String sql = "SELECT * FROM users WHERE user_id = ? AND is_deleted = 0";
+        try (Connection conn = getConn();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, userId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapResultSetToUser(rs);
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        }
+        return null;
+    }
+
     public User findByEmail(String email) {
         String sql = "SELECT * FROM users WHERE email = ? AND is_deleted = 0";
         try (Connection conn = getConn();
@@ -117,7 +136,6 @@ public class UserDAO extends DBContext<User> {
         }
         return 0;
     }
-
 
     @Override
     public int update(User user) {

@@ -381,20 +381,20 @@ INSERT [dbo].[products] ([id], [active], [createdAt], [description], [imageUrl],
 INSERT [dbo].[products] ([id], [active], [createdAt], [description], [imageUrl], [name], [price], [stock], [updatedAt], [image], [weight], [length], [width], [height]) VALUES (9, 1, CAST(N'2025-06-30T22:34:14.4270000' AS DateTime2), N'Stretchable sportswear set', N'https://m.media-amazon.com/images/I/81ZGhxZ-giL._UY1100_.jpg', N'Men Sportswear Set', CAST(379000.00 AS Numeric(12, 2)), 22, CAST(N'2025-06-30T22:34:14.4270000' AS DateTime2), N'image9.jpg', 1000, 50, 30, 20)
 INSERT [dbo].[products] ([id], [active], [createdAt], [description], [imageUrl], [name], [price], [stock], [updatedAt], [image], [weight], [length], [width], [height]) VALUES (10, 1, CAST(N'2025-06-30T22:34:14.4270000' AS DateTime2), N'Long sleeve knitted sweater', N'https://thevou.com/wp-content/uploads/2024/09/Old-Money-Mens-Clothing-Brands-696x1044.jpg', N'Women Knitted Sweater', CAST(319000.00 AS Numeric(12, 2)), 16, CAST(N'2025-06-30T22:34:14.4270000' AS DateTime2), N'image10.jpg', 1000, 50, 30, 20)
 SET IDENTITY_INSERT [dbo].[products] OFF
-SET IDENTITY_INSERT [dbo].[settings] ON 
+SET IDENTITY_INSERT [dbo].[settings] ON
 
 INSERT [dbo].[settings] ([setting_id], [setting_type], [name], [description], [is_deleted]) VALUES (1, N'ROLE', N'Admin', N'Administrator role', 0)
 INSERT [dbo].[settings] ([setting_id], [setting_type], [name], [description], [is_deleted]) VALUES (2, N'ROLE', N'User', N'Regular user role', 0)
 INSERT [dbo].[settings] ([setting_id], [setting_type], [name], [description], [is_deleted]) VALUES (3, N'ROLE', N'Staff', N'Staff role', 0)
 SET IDENTITY_INSERT [dbo].[settings] OFF
-SET IDENTITY_INSERT [dbo].[users] ON 
+SET IDENTITY_INSERT [dbo].[users] ON
 
 INSERT [dbo].[users] ([user_id], [role_id], [full_name], [password], [avatar_url], [gender], [email], [phone_number], [province_id], [province_name], [ward_code], [ward_name], [detail_address], [created_at], [updated_at], [is_deleted], [reset_password_token], [reset_password_expiry]) VALUES (2, 1, N'Nguyen Van A', N'admin123', NULL, 1, N'admin@example.com', N'0909123456', NULL, NULL, NULL, NULL, NULL, CAST(N'2025-07-03T07:40:06.000' AS DateTime), NULL, 0, NULL, NULL)
 INSERT [dbo].[users] ([user_id], [role_id], [full_name], [password], [avatar_url], [gender], [email], [phone_number], [province_id], [province_name], [ward_code], [ward_name], [detail_address], [created_at], [updated_at], [is_deleted], [reset_password_token], [reset_password_expiry]) VALUES (3, 2, N'Le Thi B', N'user123', NULL, 0, N'user1@example.com', N'0909988776', NULL, NULL, NULL, NULL, NULL, CAST(N'2025-07-03T07:40:06.000' AS DateTime), NULL, 0, NULL, NULL)
 INSERT [dbo].[users] ([user_id], [role_id], [full_name], [password], [avatar_url], [gender], [email], [phone_number], [province_id], [province_name], [ward_code], [ward_name], [detail_address], [created_at], [updated_at], [is_deleted], [reset_password_token], [reset_password_expiry]) VALUES (4, 2, N'Tran Van C', N'user456', NULL, 1, N'user2@example.com', N'0911222333', NULL, NULL, NULL, NULL, NULL, CAST(N'2025-07-03T07:40:06.000' AS DateTime), NULL, 0, NULL, NULL)
 INSERT [dbo].[users] ([user_id], [role_id], [full_name], [password], [avatar_url], [gender], [email], [phone_number], [province_id], [province_name], [ward_code], [ward_name], [detail_address], [created_at], [updated_at], [is_deleted], [reset_password_token], [reset_password_expiry]) VALUES (5, 3, N'Pham Thi D', N'staff123', NULL, 0, N'staff@example.com', N'0988776655', NULL, NULL, NULL, NULL, NULL, CAST(N'2025-07-03T07:40:06.000' AS DateTime), NULL, 0, NULL, NULL)
 SET IDENTITY_INSERT [dbo].[users] OFF
-SET IDENTITY_INSERT [dbo].[warehouses] ON 
+SET IDENTITY_INSERT [dbo].[warehouses] ON
 
 INSERT [dbo].[warehouses] ([id], [name], [address], [district_id], [ward_code], [phone]) VALUES (1, N'Default Warehouse', N'72 Thành Thái, Phu?ng 14, Qu?n 10, TP.HCM', 1444, N'20308', N'0987654321')
 SET IDENTITY_INSERT [dbo].[warehouses] OFF
@@ -421,7 +421,7 @@ GO
 
 -- Thêm dữ liệu mẫu vào bảng settings cho loại ROLE
 INSERT INTO settings (setting_type, name, description, is_deleted)
-VALUES 
+VALUES
 ('ROLE', 'Admin', 'Administrator role', 0),
 ('ROLE', 'User', 'Regular user role', 0),
 ('ROLE', 'Staff', 'Staff role', 0);

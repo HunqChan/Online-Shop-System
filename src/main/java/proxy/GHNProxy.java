@@ -1,4 +1,4 @@
-package service;
+package proxy;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,7 +8,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.*;
 
-public class GHNService {
+public class GHNProxy {
     private static final String GHN_TOKEN = "ebf83fc3-600d-11f0-b272-6641004027c3"; // TODO: Replace with real token
     private static final String BASE_URL = "https://online-gateway.ghn.vn/shiip/public-api";
     private final ObjectMapper mapper = new ObjectMapper();
@@ -101,4 +101,5 @@ public class GHNService {
         }
         return wards;
     }
+
 }

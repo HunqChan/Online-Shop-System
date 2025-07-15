@@ -1,4 +1,4 @@
-window.addEventListener("load", function () {
+document.addEventListener("DOMContentLoaded", function () {
     const provinceSelect = document.getElementById("province");
     const districtSelect = document.getElementById("district");
     const wardSelect = document.getElementById("ward");
@@ -7,132 +7,92 @@ window.addEventListener("load", function () {
     const districtHidden = document.getElementById("districtName");
     const wardHidden = document.getElementById("wardName");
 
-    const selectedProvinceId = provinceSelect?.dataset?.selected;
-    const selectedDistrictId = districtSelect?.dataset?.selected;
-    const selectedWardCode = wardSelect?.dataset?.selected;
-
     const contextPath = document.body.getAttribute("data-context-path") || "";
 
-    // ===============================
-    // Load Provinces
-    // ===============================
+    const selectedValues = {
+        provinceName: provinceHidden?.value || "",
+        districtName: districtHidden?.value || "",
+        wardName: wardHidden?.value || ""
+    };
+
+    // ===== Load Provinces =====
     fetch(`${contextPath}/api/ghn/provinces`)
-        .then(res => {
-            if (!res.ok) throw new Error("Failed to fetch provinces");
-            return res.json();
-        })
-        .then(data => {
-            provinceSelect.innerHTML = '<option value="">-- Select Province --</option>';
-            data.forEach(province => {
-                console.log("🔍 province item:", JSON.stringify(province));
-
-                const option = document.createElement("option");
-                option.value = province.ProvinceID;
-                option.textContent = province.ProvinceName;
-
-                if (selectedProvinceId && String(province.ProvinceID) === selectedProvinceId) {
-                    option.selected = true;
-                    provinceHidden.value = province.ProvinceName;
-                    console.log("✔ Province selected from session:", province.ProvinceName);
-                }
+        .then(res => res.json())
+        .then(provinces => {
+            provinceSelect.innerHTML = `<option value="">Select province</option>`;
+            provinces.forEach(p => {
+                const option = new Option(p.ProvinceName, p.ProvinceID);
+                if (p.ProvinceName === selectedValues.provinceName) option.selected = true;
                 provinceSelect.appendChild(option);
             });
-
-            if (selectedProvinceId) {
-                loadDistricts(selectedProvinceId);
+            if (provinceSelect.value) {
+                loadDistricts(provinceSelect.value);
             }
         })
-        .catch(err => {
-            console.error("❌ Error loading provinces:", err);
-        });
+        .catch(e => console.error("❌ Error loading provinces:", e));
 
-    // ===============================
-    // Load Districts
-    // ===============================
-    function loadDistricts(provinceId) {
-        fetch(`${contextPath}/api/ghn/districts?provinceId=${provinceId}`)
-            .then(res => {
-                if (!res.ok) throw new Error("Failed to fetch districts");
-                return res.json();
-            })
-            .then(data => {
-                districtSelect.innerHTML = '<option value="">-- Select District --</option>';
-                wardSelect.innerHTML = '<option value="">-- Select Ward --</option>';
-
-                data.forEach(district => {
-                    const option = document.createElement("option");
-                    option.value = district.DistrictID;
-                    option.textContent = district.DistrictName;
-
-                    if (selectedDistrictId && String(district.DistrictID) === selectedDistrictId) {
-                        option.selected = true;
-                        districtHidden.value = district.DistrictName;
-                        console.log("✔ District selected from session:", district.DistrictName);
-                    }
-
-                    districtSelect.appendChild(option);
-                });
-
-                if (selectedDistrictId) {
-                    loadWards(selectedDistrictId);
-                }
-            })
-            .catch(err => {
-                console.error("❌ Error loading districts:", err);
-            });
-    }
-
-    // ===============================
-    // Load Wards
-    // ===============================
-    function loadWards(districtId) {
-        fetch(`${contextPath}/api/ghn/wards?districtId=${districtId}`)
-            .then(res => {
-                if (!res.ok) throw new Error("Failed to fetch wards");
-                return res.json();
-            })
-            .then(data => {
-                wardSelect.innerHTML = '<option value="">-- Select Ward --</option>';
-
-                data.forEach(ward => {
-                    const option = document.createElement("option");
-                    option.value = ward.WardCode;
-                    option.textContent = ward.WardName;
-
-                    if (selectedWardCode && ward.WardCode === selectedWardCode) {
-                        option.selected = true;
-                        wardHidden.value = ward.WardName;
-                        console.log("✔ Ward selected from session:", ward.WardName);
-                    }
-
-                    wardSelect.appendChild(option);
-                });
-            })
-            .catch(err => {
-                console.error("❌ Error loading wards:", err);
-            });
-    }
-
-    // ===============================
-    // Event listeners
-    // ===============================
+    // ===== Load Districts =====
     provinceSelect.addEventListener("change", function () {
-        const selectedOption = provinceSelect.options[provinceSelect.selectedIndex];
-        provinceHidden.value = selectedOption.textContent;
+        const selectedOption = this.options[this.selectedIndex];
+        provinceHidden.value = selectedOption.text;
         districtHidden.value = "";
         wardHidden.value = "";
+
         loadDistricts(this.value);
     });
 
+    function loadDistricts(provinceId) {
+        if (!provinceId) {
+            districtSelect.innerHTML = `<option value="">Select district</option>`;
+            wardSelect.innerHTML = `<option value="">Select ward</option>`;
+            return;
+        }
+        fetch(`${contextPath}/api/ghn/districts?province_id=${provinceId}`)
+            .then(res => res.json())
+            .then(districts => {
+                districtSelect.innerHTML = `<option value="">Select district</option>`;
+                districts.forEach(d => {
+                    const option = new Option(d.DistrictName, d.DistrictID);
+                    if (d.DistrictName === selectedValues.districtName) option.selected = true;
+                    districtSelect.appendChild(option);
+                });
+                if (districtSelect.value) {
+                    loadWards(districtSelect.value);
+                }
+            })
+            .catch(e => console.error("❌ Error loading districts:", e));
+    }
+
+    // ===== Load Wards =====
     districtSelect.addEventListener("change", function () {
-        const selectedOption = districtSelect.options[districtSelect.selectedIndex];
-        districtHidden.value = selectedOption.textContent;
+        const selectedOption = this.options[this.selectedIndex];
+        districtHidden.value = selectedOption.text;
         wardHidden.value = "";
+
         loadWards(this.value);
     });
 
+    function loadWards(districtId) {
+        if (!districtId) {
+            wardSelect.innerHTML = `<option value="">Select ward</option>`;
+            return;
+        }
+        fetch(`${contextPath}/api/ghn/wards?district_id=${districtId}`)
+            .then(res => res.json())
+            .then(wards => {
+                wardSelect.innerHTML = `<option value="">Select ward</option>`;
+                wards.forEach(w => {
+                    const option = new Option(w.WardName, w.WardCode);
+                    if (w.WardName === selectedValues.wardName) option.selected = true;
+                    wardSelect.appendChild(option);
+                });
+            })
+            .catch(e => console.error("❌ Error loading wards:", e));
+    }
+
+    // ===== Update hidden input when ward changes =====
     wardSelect.addEventListener("change", function () {
-        const selectedOption = wardSelect.options[wardSelect.selectedIndex];
-        wardHidden.value = selectedOption.textContent;
+        const selectedOption = this.options[this.selectedIndex];
+        wardHidden.value = selectedOption.text;
     });
 });

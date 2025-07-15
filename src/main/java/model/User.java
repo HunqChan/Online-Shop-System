@@ -32,11 +32,4 @@ public class User {
     private String resetPasswordToken;
     private Timestamp resetPasswordExpiry;
 
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
 }
