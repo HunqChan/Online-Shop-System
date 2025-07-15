@@ -7,7 +7,6 @@
                 <packaging>ear</packaging>
                 <packaging>ejb</packaging>
             </packagings>
-
             <goals>
                 <goal>package</goal>
             </goals>

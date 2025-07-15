@@ -12,7 +12,7 @@ public abstract class DBContext<E> {
     private final String pass;
 
     public DBContext() {
-        this("jdbc:sqlserver://localhost:1433;databaseName=onlineShopSystem;encrypt=false",
+        this("jdbc:sqlserver://localhost:1433;databaseName=swdproject;encrypt=false",
                 "sa", "123");
     }
 
