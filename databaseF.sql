@@ -147,47 +147,53 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE TABLE [dbo].[settings](
-	[setting_id] [int] IDENTITY(1,1) NOT NULL,
-	[setting_type] [nvarchar](50) NOT NULL,
-	[name] [nvarchar](100) NOT NULL,
-	[description] [nvarchar](max) NULL,
-	[is_deleted] [bit] NOT NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[setting_id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+CREATE TABLE [dbo].[settings] (
+    [setting_id]   INT IDENTITY(1,1) PRIMARY KEY,
+    [setting_type] NVARCHAR(50)  NOT NULL,
+    [name]         NVARCHAR(100) NOT NULL,
+    [description]  NVARCHAR(MAX) NULL,
+    [is_deleted]   BIT           NOT NULL DEFAULT 0
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY];
+-- Thêm dữ liệu mẫu vào bảng settings cho loại ROLE
+INSERT INTO [dbo].[settings] ([setting_type], [name], [description])
+VALUES 
+    (N'ROLE', N'Admin', N'Administrator role'),
+    (N'ROLE', N'User', N'Regular user role'),
+    (N'ROLE', N'Staff', N'Staff role');
+
 GO
 /****** Object:  Table [dbo].[users]    Script Date: 7/3/2025 7:44:53 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE TABLE [dbo].[users](
-	[user_id] [int] IDENTITY(1,1) NOT NULL,
-	[role_id] [int] NOT NULL,
-	[full_name] [nvarchar](100) NOT NULL,
-	[password] [varchar](100) NULL,
-	[avatar_url] [nvarchar](max) NULL,
-	[gender] [bit] NULL,
-	[email] [nvarchar](100) NOT NULL,
-	[phone_number] [nvarchar](15) NULL,
-	[province_id] [int] NULL,
-	[province_name] [nvarchar](100) NULL,
-	[ward_code] [nvarchar](20) NULL,
-	[ward_name] [nvarchar](100) NULL,
-	[detail_address] [nvarchar](255) NULL,
-	[created_at] [datetime] NULL,
-	[updated_at] [datetime] NULL,
-	[is_deleted] [bit] NOT NULL,
-	[reset_password_token] [nvarchar](max) NULL,
-	[reset_password_expiry] [datetime] NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[user_id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+CREATE TABLE [dbo].[users] (
+    [user_id]               INT IDENTITY(1,1) PRIMARY KEY,
+    [role_id]               INT            NOT NULL,
+    [full_name]             NVARCHAR(100)  NOT NULL,
+    [password]              VARCHAR(100)   NULL,
+    [avatar_url]            NVARCHAR(MAX)  NULL,
+    [gender]                BIT            NULL,
+    [email]                 NVARCHAR(100)  NOT NULL,
+    [phone_number]          NVARCHAR(15)   NULL,
+
+    [province_id]           INT            NULL,
+    [province_name]         NVARCHAR(100)  NULL,
+    [district_id]           INT            NULL,
+    [district_name]         NVARCHAR(100)  NULL,
+    [ward_code]             NVARCHAR(20)   NULL,
+    [ward_name]             NVARCHAR(100)  NULL,
+    [detail_address]        NVARCHAR(255)  NULL,
+
+    [created_at]            DATETIME       DEFAULT GETDATE(),
+    [updated_at]            DATETIME       NULL,
+    [is_deleted]            BIT            NOT NULL DEFAULT 0,
+    [reset_password_token]  NVARCHAR(MAX)  NULL,
+    [reset_password_expiry] DATETIME       NULL,
+
+    CONSTRAINT fk_users_role_id FOREIGN KEY ([role_id]) REFERENCES [dbo].[settings]([setting_id])
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY];
+
 GO
 /****** Object:  Table [dbo].[warehouses]    Script Date: 7/3/2025 7:44:53 AM ******/
 SET ANSI_NULLS ON
