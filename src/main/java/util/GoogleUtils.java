@@ -25,6 +25,7 @@ public class GoogleUtils {
 
         return flow.newAuthorizationUrl()
                 .setRedirectUri(REDIRECT_URI)
+                .set("prompt", "select_account")
                 .build();
     }
 

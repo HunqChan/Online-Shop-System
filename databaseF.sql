@@ -418,20 +418,3 @@ GO
 ALTER TABLE users
 ADD CONSTRAINT fk_users_role_id FOREIGN KEY (role_id) REFERENCES settings(setting_id);
 GO
-
--- Thêm dữ liệu mẫu vào bảng settings cho loại ROLE
-INSERT INTO settings (setting_type, name, description, is_deleted)
-VALUES
-('ROLE', 'Admin', 'Administrator role', 0),
-('ROLE', 'User', 'Regular user role', 0),
-('ROLE', 'Staff', 'Staff role', 0);
-GO
-
--- Thêm dữ liệu mẫu vào bảng users (Admin, Users, Staff)
-INSERT INTO users (role_id, full_name, password, avatar_url, gender, email, phone_number, created_at, is_deleted)
-VALUES
-(1, 'Nguyen Van A', 'admin123', NULL, 1, 'admin@example.com', '0909123456', GETDATE(), 0),
-(2, 'Le Thi B', 'user123', NULL, 0, 'user1@example.com', '0909988776', GETDATE(), 0),
-(2, 'Tran Van C', 'user456', NULL, 1, 'user2@example.com', '0911222333', GETDATE(), 0),
-(3, 'Pham Thi D', 'staff123', NULL, 0, 'staff@example.com', '0988776655', GETDATE(), 0);
-GO

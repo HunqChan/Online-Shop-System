@@ -15,7 +15,7 @@ public class VNPayHelper {
     private static final String VNP_TMNCODE = "30NRFAGC";
     private static final String VNP_HASH_SECRET = "9S4WHMNDYXVZBFDE76T90A3U12ZKYV06";
     private static final String VNP_PAY_URL = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-    private static final String VNP_RETURN_URL = "http://localhost:8081/VnPaY/vnpay_return";
+    private static final String VNP_RETURN_URL = "http://localhost:9999/Online_Shop_System_war_exploded/vnpay_return";
 
     public static String createPaymentUrl(Order order, HttpServletRequest request) {
         try {
