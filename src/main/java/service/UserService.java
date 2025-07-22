@@ -71,7 +71,7 @@ public class UserService {
         try {
             return Integer.parseInt(str);
         } catch (NumberFormatException e) {
-            return -1; // hoặc throw nếu bạn muốn bắt lỗi ngay
+            return -1; // hoặc throw nếu muốn bắt lỗi
         }
     }
 

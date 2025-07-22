@@ -13,8 +13,8 @@ public class UserValidator {
             errors.add("Full name is required.");
         if (user.getEmail() == null || !user.getEmail().matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$"))
             errors.add("Invalid email format.");
-        if (user.getPhoneNumber() != null && !user.getPhoneNumber().matches("^\\d{9,11}$"))
-            errors.add("Phone number must be 9-11 digits.");
+        if (user.getPhoneNumber() != null && !user.getPhoneNumber().matches("^\\d{10,11}$"))
+            errors.add("Phone number must be 10-11 digits.");
         if (user.getGender() == null)
             errors.add("Gender is required.");
         if (user.getProvinceId() <= 0)
